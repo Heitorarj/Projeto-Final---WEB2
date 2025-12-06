@@ -1,27 +1,27 @@
 CREATE DATABASE db_loja CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE db_loja;
 
-CREATE TABLE usuario (
+CREATE TABLE usuarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(150) NOT NULL,
-  login VARCHAR(100) NOT NULL UNIQUE,
+  email VARCHAR(100) NOT NULL UNIQUE,
   senha_hash VARCHAR(255) NOT NULL,
   tipo TINYINT NOT NULL DEFAULT 0, 
   criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE categoria (
+CREATE TABLE categorias (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE fabricante (
+CREATE TABLE fabricantes (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(150),
   site VARCHAR(255)
 );
 
-CREATE TABLE produto (
+CREATE TABLE produtos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(200) NOT NULL,
   descricao TEXT,
@@ -36,7 +36,7 @@ CREATE TABLE produto (
   FOREIGN KEY (categoria_id) REFERENCES categoria(id) ON DELETE SET NULL
 );
 
-CREATE TABLE venda (
+CREATE TABLE vendas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   usuario_id INT NOT NULL,
   data_venda DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -44,7 +44,7 @@ CREATE TABLE venda (
   FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
 
-CREATE TABLE item_venda (
+CREATE TABLE itens_venda (
   id INT AUTO_INCREMENT PRIMARY KEY,
   venda_id INT NOT NULL,
   produto_id INT NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE item_venda (
   FOREIGN KEY (produto_id) REFERENCES produto(id)
 );
 
-CREATE TABLE caracteristica (
+CREATE TABLE caracteristicas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   produto_id INT NOT NULL,
   nome VARCHAR(100),
