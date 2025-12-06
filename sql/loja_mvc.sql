@@ -1,0 +1,63 @@
+CREATE DATABASE loja_mvc CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE loja_mvc;
+
+CREATE TABLE usuario (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  login VARCHAR(100) NOT NULL UNIQUE,
+  senha_hash VARCHAR(255) NOT NULL,
+  tipo TINYINT NOT NULL DEFAULT 0, 
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categoria (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE fabricante (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(150),
+  site VARCHAR(255)
+);
+
+CREATE TABLE produto (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(200) NOT NULL,
+  descricao TEXT,
+  imagem VARCHAR(255),
+  estoque INT DEFAULT 0,
+  preco_custo DECIMAL(10,2) DEFAULT 0,
+  preco_venda DECIMAL(10,2) NOT NULL,
+  fabricante_id INT,
+  categoria_id INT,
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (fabricante_id) REFERENCES fabricante(id) ON DELETE SET NULL,
+  FOREIGN KEY (categoria_id) REFERENCES categoria(id) ON DELETE SET NULL
+);
+
+CREATE TABLE venda (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  data_venda DATETIME DEFAULT CURRENT_TIMESTAMP,
+  valor_total DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+);
+
+CREATE TABLE item_venda (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  venda_id INT NOT NULL,
+  produto_id INT NOT NULL,
+  quantidade INT NOT NULL,
+  preco_unit DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (venda_id) REFERENCES venda(id) ON DELETE CASCADE,
+  FOREIGN KEY (produto_id) REFERENCES produto(id)
+);
+
+CREATE TABLE caracteristica (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  produto_id INT NOT NULL,
+  nome VARCHAR(100),
+  valor VARCHAR(255),
+  FOREIGN KEY (produto_id) REFERENCES produto(id) ON DELETE CASCADE
+);
