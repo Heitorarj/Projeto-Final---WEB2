@@ -1,6 +1,3 @@
 <?php
 
-class Cliente extends Usuario
-{
-
-}
+class Cliente extends Usuario {}
