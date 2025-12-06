@@ -1,5 +1,5 @@
-CREATE DATABASE loja_mvc CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE loja_mvc;
+CREATE DATABASE db_loja CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE db_loja;
 
 CREATE TABLE usuario (
   id INT AUTO_INCREMENT PRIMARY KEY,
