@@ -5,11 +5,11 @@
 <nav class="navbar navbar-expand-lg fixed-top" style="background:#0a0a23;">
     <div class="container-fluid">
 
-        <a class="navbar-brand fw-bold text-light" href="clienteDashboard.php">
+        <a class="navbar-brand fw-bold text-light" href="adminDashboard.php">
             FUT STORE
         </a>
 
-        <a href="clienteDashboard.php" class="ms-2">
+        <a href="adminDashboard.php" class="ms-2">
             <img src="https://img.icons8.com/?size=100&id=2797&format=png&color=ffffff"
                  alt="Início" style="width:28px; height:28px;">
         </a>
@@ -18,14 +18,14 @@
             <ul class="navbar-nav">
 
                 <li class="nav-item">
-                    <form method="POST" action="comprasCliente.php" class="m-0 p-0">
-                        <button type="submit" class="nav-link btn btn-link text-light">Minhas Compras</button>
+                    <form method="POST" action="produtosCadastrados.php" class="m-0 p-0">
+                        <button type="submit" class="nav-link btn btn-link text-light">Produtos Cadastrados</button>
                     </form>
                 </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="clienteCarrinho.php">
-                        Carrinho
+                    <a class="nav-link text-light" href="adminVendas.php">
+                        Vendas
                     </a>
                 </li>
 
