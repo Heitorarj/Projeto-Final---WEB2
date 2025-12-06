@@ -1,6 +1,6 @@
 <?php
 
-class Categoria
+class Categoria implements iDao
 {
     private int $id;
     private string $nome;
@@ -32,4 +32,18 @@ class Categoria
     {
         $this->nome = $nome;
     }
+
+    /**
+     * iDao Methods
+     */
+
+    public static function create($obj) {}
+
+    public static function read($id) {}
+
+    public static function update($obj) {}
+
+    public static function delete($id) {}
+
+    public static function all() {}
 }

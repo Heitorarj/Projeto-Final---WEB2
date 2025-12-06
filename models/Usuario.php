@@ -1,6 +1,6 @@
 <?php
 
-class Usuario
+class Usuario implements iDao
 {
     private int $id;
     private int $tipo;
@@ -65,4 +65,18 @@ class Usuario
     {
         $this->senha = $senha;
     }
+
+    /**
+     * DAO Methods
+     */
+
+    public static function create($obj) {}
+
+    public static function read($id) {}
+
+    public static function update($obj) {}
+
+    public static function delete($id) {}
+
+    public static function all() {}
 }

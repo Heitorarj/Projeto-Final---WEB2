@@ -1,6 +1,6 @@
 <?php
 
-class Produto
+class Produto implements iDao
 {
     private int $id;
     private string $nome;
@@ -124,4 +124,18 @@ class Produto
         $caracteristica->setValor($valor);
         $this->caracteristicas[] = $caracteristica;
     }
+
+    /**
+     * iDao Methods
+     */
+
+    public static function create($obj) {}
+
+    public static function read($id) {}
+
+    public static function update($obj) {}
+
+    public static function delete($id) {}
+
+    public static function all() {}
 }

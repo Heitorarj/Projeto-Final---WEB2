@@ -1,6 +1,6 @@
 <?php
 
-class Venda
+class Venda implements iDao
 {
     private int $id;
     private string $data_venda;
@@ -77,4 +77,18 @@ class Venda
         $item_venda->setQuantidade($quantidade);
         $this->itens_venda[] = $item_venda;
     }
+
+    /**
+     * iDao Methods
+     */
+
+    public static function create($obj) {}
+
+    public static function read($id) {}
+
+    public static function update($obj) {}
+
+    public static function delete($id) {}
+
+    public static function all() {}
 }

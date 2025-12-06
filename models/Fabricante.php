@@ -1,6 +1,6 @@
 <?php
 
-class Fabricante
+class Fabricante implements iDao
 {
     private int $id;
     private string $nome;
@@ -43,4 +43,18 @@ class Fabricante
     {
         $this->site = $site;
     }
+
+    /**
+     * iDao Methods
+     */
+
+    public static function create($obj) {}
+
+    public static function read($id) {}
+
+    public static function update($obj) {}
+
+    public static function delete($id) {}
+
+    public static function all() {}
 }
