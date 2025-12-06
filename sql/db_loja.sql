@@ -32,8 +32,8 @@ CREATE TABLE produtos (
   fabricante_id INT,
   categoria_id INT,
   criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (fabricante_id) REFERENCES fabricante(id) ON DELETE SET NULL,
-  FOREIGN KEY (categoria_id) REFERENCES categoria(id) ON DELETE SET NULL
+  FOREIGN KEY (fabricante_id) REFERENCES fabricantes(id) ON DELETE SET NULL,
+  FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE SET NULL
 );
 
 CREATE TABLE vendas (
@@ -41,7 +41,7 @@ CREATE TABLE vendas (
   usuario_id INT NOT NULL,
   data_venda DATETIME DEFAULT CURRENT_TIMESTAMP,
   valor_total DECIMAL(10,2) NOT NULL,
-  FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 
 CREATE TABLE itens_venda (
@@ -50,8 +50,8 @@ CREATE TABLE itens_venda (
   produto_id INT NOT NULL,
   quantidade INT NOT NULL,
   preco_unit DECIMAL(10,2) NOT NULL,
-  FOREIGN KEY (venda_id) REFERENCES venda(id) ON DELETE CASCADE,
-  FOREIGN KEY (produto_id) REFERENCES produto(id)
+  FOREIGN KEY (venda_id) REFERENCES vendas(id) ON DELETE CASCADE,
+  FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
 
 CREATE TABLE caracteristicas (
@@ -59,5 +59,5 @@ CREATE TABLE caracteristicas (
   produto_id INT NOT NULL,
   nome VARCHAR(100),
   valor VARCHAR(255),
-  FOREIGN KEY (produto_id) REFERENCES produto(id) ON DELETE CASCADE
+  FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
 );
