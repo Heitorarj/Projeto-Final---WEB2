@@ -1,1 +1,0 @@
-<div class="h1">Welcome to the E-commerce Camisas</div>
