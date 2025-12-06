@@ -45,16 +45,147 @@ class Fabricante implements iDao
     }
 
     /**
+     * Database Connection
+     */
+
+    private static function getPDO(): PDO
+    {
+        return Database::getInstance();
+    }
+
+    /**
      * iDao Methods
      */
 
-    public static function create($obj) {}
+    public static function create(array $data): int
+    {
+        if (empty($data['nome'])) {
+            throw new Exception("Nome do fabricante é obrigatório");
+        }
 
-    public static function read($id) {}
+        $sql = "INSERT INTO fabricantes (nome, site) 
+                VALUES (:nome, :site)";
 
-    public static function update($obj) {}
+        try {
+            $pdo = self::getPDO();
+            $stmt = $pdo->prepare($sql);
 
-    public static function delete($id) {}
+            $stmt->execute([
+                ':nome' => $data['nome'],
+                ':site' => $data['site'] ?? ''
+            ]);
 
-    public static function all() {}
+            return (int) $pdo->lastInsertId();
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000) {
+                throw new Exception("Fabricante com este nome já existe");
+            }
+            throw new Exception("Erro ao criar fabricante: " . $e->getMessage());
+        }
+    }
+
+    public static function read(int $id): ?array
+    {
+        $sql = "SELECT id, nome, site 
+                FROM fabricantes 
+                WHERE id = :id";
+
+        try {
+            $pdo = self::getPDO();
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result ?: null;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar fabricante: " . $e->getMessage());
+        }
+    }
+
+    public static function update(int $id, array $data): bool
+    {
+        $fields = [];
+        $params = [':id' => $id];
+
+        if (isset($data['nome'])) {
+            $fields[] = "nome = :nome";
+            $params[':nome'] = $data['nome'];
+        }
+
+        if (isset($data['site'])) {
+            $fields[] = "site = :site";
+            $params[':site'] = $data['site'];
+        }
+
+        if (empty($fields)) {
+            return false;
+        }
+
+        $sql = "UPDATE fabricantes SET " . implode(', ', $fields) . " WHERE id = :id";
+
+        try {
+            $pdo = self::getPDO();
+            $stmt = $pdo->prepare($sql);
+            return $stmt->execute($params);
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000) {
+                throw new Exception("Fabricante com este nome já existe");
+            }
+            throw new Exception("Erro ao atualizar fabricante: " . $e->getMessage());
+        }
+    }
+
+    public static function delete(int $id): bool
+    {
+        $sql_check = "SELECT COUNT(*) as total FROM produtos WHERE fabricante_id = :id";
+        $sql_delete = "DELETE FROM fabricantes WHERE id = :id";
+
+        try {
+            $pdo = self::getPDO();
+
+            $stmt_check = $pdo->prepare($sql_check);
+            $stmt_check->execute([':id' => $id]);
+            $result = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+            if ((int)$result['total'] > 0) {
+                throw new Exception("Não é possível excluir o fabricante pois existem produtos associados a ele.");
+            }
+
+            $stmt = $pdo->prepare($sql_delete);
+            return $stmt->execute([':id' => $id]);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao deletar fabricante: " . $e->getMessage());
+        }
+    }
+
+    public static function findAll(): array
+    {
+        $sql = "SELECT id, nome, site 
+                FROM fabricantes 
+                ORDER BY nome ASC";
+
+        try {
+            $pdo = self::getPDO();
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar todos os fabricantes: " . $e->getMessage());
+        }
+    }
+
+    public static function count(): int
+    {
+        $sql = "SELECT COUNT(*) as total FROM fabricantes";
+
+        try {
+            $pdo = self::getPDO();
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return (int) $result['total'];
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao contar fabricantes: " . $e->getMessage());
+        }
+    }
 }

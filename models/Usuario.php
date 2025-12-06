@@ -8,10 +8,6 @@ class Usuario implements iDao
     private string $email;
     private string $senha;
 
-    private static function getPDO(): PDO
-    {
-        return Database::getInstance();
-    }
 
     /** 
      * Getters 
@@ -71,19 +67,26 @@ class Usuario implements iDao
         $this->senha = $senha;
     }
 
+    /** 
+     * Database Connection
+     */
+
+    private static function getPDO(): PDO
+    {
+        return Database::getInstance();
+    }
+
     /**
      * DAO Methods
      */
-
     public static function create(array $data): int
     {
-        // Validações
         if (empty($data['email']) || empty($data['senha'])) {
             throw new Exception("Email e senha são obrigatórios");
         }
 
-        $sql = "INSERT INTO usuarios (nome, email, senha, data_criacao) 
-                VALUES (:nome, :email, :senha, NOW())";
+        $sql = "INSERT INTO usuarios (nome, email, senha_hash, tipo) 
+                VALUES (:nome, :email, :senha_hash, :tipo)";
 
         try {
             $pdo = self::getPDO();
@@ -92,12 +95,12 @@ class Usuario implements iDao
             $stmt->execute([
                 ':nome' => $data['nome'] ?? '',
                 ':email' => $data['email'],
-                ':senha' => password_hash($data['senha'], PASSWORD_DEFAULT)
+                ':senha_hash' => password_hash($data['senha'], PASSWORD_DEFAULT),
+                ':tipo' => $data['tipo'] ?? 0
             ]);
 
             return (int) $pdo->lastInsertId();
         } catch (PDOException $e) {
-            // Verifica se é erro de duplicado (email único)
             if ($e->getCode() == 23000) {
                 throw new Exception("Email já cadastrado");
             }
@@ -107,7 +110,7 @@ class Usuario implements iDao
 
     public static function read(int $id): ?array
     {
-        $sql = "SELECT id, nome, email, data_criacao 
+        $sql = "SELECT id, nome, email, tipo, criado_em 
                 FROM usuarios 
                 WHERE id = :id";
 
@@ -115,7 +118,7 @@ class Usuario implements iDao
             $pdo = self::getPDO();
             $stmt = $pdo->prepare($sql);
             $stmt->execute([':id' => $id]);
-            $result = $stmt->fetch();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             return $result ?: null;
         } catch (PDOException $e) {
@@ -125,7 +128,6 @@ class Usuario implements iDao
 
     public static function update(int $id, array $data): bool
     {
-        // Construir query dinamicamente para não sobrescrever senha
         $fields = [];
         $params = [':id' => $id];
 
@@ -140,12 +142,17 @@ class Usuario implements iDao
         }
 
         if (isset($data['senha'])) {
-            $fields[] = "senha = :senha";
-            $params[':senha'] = password_hash($data['senha'], PASSWORD_DEFAULT);
+            $fields[] = "senha_hash = :senha_hash";
+            $params[':senha_hash'] = password_hash($data['senha'], PASSWORD_DEFAULT);
+        }
+
+        if (isset($data['tipo'])) {
+            $fields[] = "tipo = :tipo";
+            $params[':tipo'] = $data['tipo'];
         }
 
         if (empty($fields)) {
-            return false; // Nada para atualizar
+            return false;
         }
 
         $sql = "UPDATE usuarios SET " . implode(', ', $fields) . " WHERE id = :id";
@@ -174,15 +181,15 @@ class Usuario implements iDao
 
     public static function findAll(): array
     {
-        $sql = "SELECT id, nome, email, data_criacao 
+        $sql = "SELECT id, nome, email, tipo, criado_em 
                 FROM usuarios 
-                ORDER BY id DESC";
+                ORDER BY criado_em DESC";
 
         try {
             $pdo = self::getPDO();
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
-            return $stmt->fetchAll();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Erro ao buscar todos os usuários: " . $e->getMessage());
         }
@@ -196,35 +203,30 @@ class Usuario implements iDao
             $pdo = self::getPDO();
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
-            $result = $stmt->fetch();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
             return (int) $result['total'];
         } catch (PDOException $e) {
             throw new Exception("Erro ao contar usuários: " . $e->getMessage());
         }
     }
 
-    /**
-     * Additional Methods
-     */
-
     public static function login(string $email, string $senha): ?array
     {
-        $sql = "SELECT id, nome, email, senha, criado_em 
-                FROM usuario 
+        $sql = "SELECT id, nome, email, senha_hash, tipo, criado_em 
+                FROM usuarios 
                 WHERE email = :email";
 
         try {
             $pdo = self::getPDO();
             $stmt = $pdo->prepare($sql);
             $stmt->execute([':email' => $email]);
-            $usuario = $stmt->fetch();
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (!$usuario || !password_verify($senha, $usuario['senha'])) {
+            if (!$usuario || !password_verify($senha, $usuario['senha_hash'])) {
                 return null;
             }
 
-            // Remove a senha do retorno
-            unset($usuario['senha']);
+            unset($usuario['senha_hash']);
             return $usuario;
         } catch (PDOException $e) {
             throw new Exception("Erro ao fazer login: " . $e->getMessage());
