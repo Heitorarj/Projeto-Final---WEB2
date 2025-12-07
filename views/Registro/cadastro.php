@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -48,16 +51,25 @@
             <h2 class="text-center fw-bold">Cadastro</h2>
             <p class="text-center mb-4">Crie sua conta para comprar camisas</p>
 
+            <?php if (isset($_SESSION['erro'])): ?>
+                <div class="alert alert-danger">
+                    <?php 
+                    echo $_SESSION['erro']; 
+                    unset($_SESSION['erro']);
+                    ?>
+                </div>
+            <?php endif; ?>
+
             <div class="form-card shadow">
-                <form method="POST" action="processa_cadastro.php">
+                <form method="POST" action="../../actions/auth/register.php">
 
      
                     <label class="fw-bold">Nome</label>
                     <input type="text" class="form-control mb-3" name="nome" required>
 
                  
-                    <label class="fw-bold">Login</label>
-                    <input type="text" class="form-control mb-3" name="login" required>
+                    <label class="fw-bold">Email</label>
+                    <input type="email" class="form-control mb-3" name="email" required>
 
           
                     <label class="fw-bold">Senha</label>

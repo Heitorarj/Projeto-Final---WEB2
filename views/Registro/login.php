@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -50,8 +53,26 @@
             <h2 class="text-center fw-bold">Login</h2>
             <p class="text-center mb-4">Acesse sua conta</p>
 
+            <?php if (isset($_SESSION['sucesso'])): ?>
+                <div class="alert alert-success">
+                    <?php 
+                    echo $_SESSION['sucesso']; 
+                    unset($_SESSION['sucesso']);
+                    ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['erro'])): ?>
+                <div class="alert alert-danger">
+                    <?php 
+                    echo $_SESSION['erro']; 
+                    unset($_SESSION['erro']);
+                    ?>
+                </div>
+            <?php endif; ?>
+
             <div class="form-card shadow">
-                <form method="POST" action="processa_login.php">
+                <form method="POST" action="../../actions/auth/login.php">
 
                     <label class="fw-bold">Email</label>
                     <input type="email" class="form-control mb-3" name="email" required>

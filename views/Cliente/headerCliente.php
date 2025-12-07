@@ -1,3 +1,9 @@
+<?php
+require_once __DIR__ . '/../../controllers/AuthController.php';
+
+AuthController::requireLogin();
+$usuario = AuthController::getUsuarioLogado();
+?>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -30,9 +36,11 @@
                 </li>
 
                 <li class="nav-item">
-                    <form method="POST" action="home.php" class="m-0 p-0">
-                        <button type="submit" class="nav-link btn btn-link text-light">Sair</button>
-                    </form>
+                    <span class="nav-link text-light">Olá, <?php echo htmlspecialchars($usuario['nome']); ?></span>
+                </li>
+
+                <li class="nav-item">
+                    <a href="../../actions/auth/logout.php" class="nav-link text-light">Sair</a>
                 </li>
 
             </ul>

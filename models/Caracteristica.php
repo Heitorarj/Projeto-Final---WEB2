@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/../interfaces/iDao.php';
 class Caracteristica implements iDao
 {
     private int $id;

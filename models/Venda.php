@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/../interfaces/iDao.php';
 class Venda implements iDao
 {
     private int $id;
@@ -283,6 +283,72 @@ class Venda implements iDao
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Erro ao buscar itens da venda: " . $e->getMessage());
+        }
+    }
+
+    public static function findByUsuario(int $usuario_id): array
+    {
+        $sql = "SELECT v.*, u.nome as usuario_nome, u.email as usuario_email
+                FROM vendas v
+                INNER JOIN usuarios u ON v.usuario_id = u.id
+                WHERE v.usuario_id = :usuario_id
+                ORDER BY v.data_venda DESC, v.id DESC";
+
+        try {
+            $pdo = self::getPDO();
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':usuario_id' => $usuario_id]);
+            $vendas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($vendas as &$venda) {
+                $venda['itens'] = self::buscarItensVenda($venda['id']);
+            }
+
+            return $vendas;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar vendas por usuário: " . $e->getMessage());
+        }
+    }
+
+    public static function findByPeriodo(string $data_inicio, string $data_fim): array
+    {
+        $sql = "SELECT v.*, u.nome as usuario_nome, u.email as usuario_email
+                FROM vendas v
+                INNER JOIN usuarios u ON v.usuario_id = u.id
+                WHERE v.data_venda BETWEEN :data_inicio AND :data_fim
+                ORDER BY v.data_venda DESC, v.id DESC";
+
+        try {
+            $pdo = self::getPDO();
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':data_inicio' => $data_inicio,
+                ':data_fim' => $data_fim
+            ]);
+            $vendas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($vendas as &$venda) {
+                $venda['itens'] = self::buscarItensVenda($venda['id']);
+            }
+
+            return $vendas;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar vendas por período: " . $e->getMessage());
+        }
+    }
+
+    public static function getValorTotalVendas(): float
+    {
+        $sql = "SELECT COALESCE(SUM(valor_total), 0) as total FROM vendas";
+
+        try {
+            $pdo = self::getPDO();
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return (float) $result['total'];
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao obter valor total das vendas: " . $e->getMessage());
         }
     }
 }
