@@ -60,7 +60,7 @@
 
         <div class="row justify-content-center">
 
-            <div class="col-md-4 mb-4">
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
                 <div class="card admin-card shadow-sm text-center">
                     <i class="fas fa-box-open admin-icon"></i>
                     <h4>Gerenciar Produtos</h4>
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4 mb-4">
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
                 <div class="card admin-card shadow-sm text-center">
                     <i class="fas fa-shopping-cart admin-icon"></i>
                     <h4>Relatório de Vendas</h4>
@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4 mb-4">
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
                 <div class="card admin-card shadow-sm text-center">
                     <i class="fas fa-tags admin-icon"></i>
                     <h4>Gerenciar Categorias</h4>
@@ -96,7 +96,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4 mb-4">
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
                 <div class="card admin-card shadow-sm text-center">
                     <i class="fas fa-industry admin-icon"></i>
                     <h4>Gerenciar Fabricantes</h4>
