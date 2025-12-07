@@ -40,7 +40,7 @@ class FabricanteController
         self::startSession();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../views/Admin/fabricanteCadastro.php');
             exit();
         }
 
@@ -60,12 +60,12 @@ class FabricanteController
             Fabricante::create($data);
 
             $_SESSION['sucesso'] = "Fabricante cadastrado com sucesso!";
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/fabricanteCadastro.php');
             exit();
 
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/adminDashboard.php');
             exit();
         }
     }

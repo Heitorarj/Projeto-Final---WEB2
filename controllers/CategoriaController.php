@@ -40,7 +40,7 @@ class CategoriaController
         self::startSession();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../views/Admin/categoriaCadastro.php');
             exit();
         }
 
@@ -55,12 +55,12 @@ class CategoriaController
             Categoria::create($data);
 
             $_SESSION['sucesso'] = "Categoria cadastrada com sucesso!";
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/categoriaCadastro.php');
             exit();
 
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/adminDashboard.php');
             exit();
         }
     }
