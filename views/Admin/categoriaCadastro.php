@@ -53,14 +53,6 @@
                 Registrar Categoria
             </button>
 
-            <button type="submit" name="acao" value="editar" class="btn btn-warning w-100 mb-2">
-             Editar Categoria
-            </button>
-
-            <button type="submit" name="acao" value="excluir" class="btn btn-danger w-100">
-                Excluir Categoria
-            </button>
-
         </form>
 
     </div>

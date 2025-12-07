@@ -90,7 +90,7 @@
                     <h4>Gerenciar Categorias</h4>
                     <p>Criar, editar e administrar categorias de produtos.</p>
 
-                    <a href="categoriaCadastro.php" class="btn btn-warning w-100 btn-dashboard">
+                    <a href="listarCategorias.php" class="btn btn-warning w-100 btn-dashboard">
                         Acessar Categorias
                     </a>
                 </div>
@@ -102,7 +102,7 @@
                     <h4>Gerenciar Fabricantes</h4>
                     <p>Adicionar e editar fabricantes cadastrados.</p>
 
-                    <a href="fabricanteCadastro.php" class="btn btn-dark w-100 btn-dashboard">
+                    <a href="listarFabricante.php" class="btn btn-dark w-100 btn-dashboard">
                         Acessar Fabricantes
                     </a>
                 </div>

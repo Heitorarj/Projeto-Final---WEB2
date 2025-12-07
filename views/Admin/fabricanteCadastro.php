@@ -1,5 +1,6 @@
 <?php
     include "headerAdmin.php";
+    session_start();
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +32,7 @@
 
         <h3 class="text-center mb-4">Cadastrar Fabricante</h3>
 
-        <!-- ✅ Mensagens -->
+        <!-- Mensagens -->
         <?php if (isset($_SESSION['sucesso'])): ?>
             <div class="alert alert-success">
                 <?= $_SESSION['sucesso']; unset($_SESSION['sucesso']); ?>
@@ -52,19 +53,15 @@
             <label class="fw-bold">Site do Fabricante:</label>
             <input type="text" name="site" class="form-control mb-3" required>
 
-            <button type="submit" name="acao" value="cadastrar" class="btn btn-success w-100 mb-2">
+            <button type="submit" name="acao" value="cadastrar" class="btn btn-success w-100 mt-3">
                 Registrar Fabricante
             </button>
 
-            <button type="submit" name="acao" value="editar" class="btn btn-warning w-100 mb-2">
-                 Editar Fabricante
-            </button>
-
-            <button type="submit" name="acao" value="excluir" class="btn btn-danger w-100">
-             Excluir Fabricante
-            </button>
-
         </form>
+
+        <a href="listarFabricantes.php" class="btn btn-secondary w-100 mt-3">
+            Voltar para Lista
+        </a>
 
     </div>
 </div>
