@@ -1,101 +1,94 @@
 <?php
-session_start();
-include "headerAdmin.php";
-
-require_once __DIR__ . '/../../controllers/CategoriaController.php';
-require_once __DIR__ . '/../../controllers/FabricanteController.php';
-
-$categorias = CategoriaController::listar();
-$fabricantes = FabricanteController::listar();
+    include "headerAdmin.php";
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <title>Cadastrar Produto - Admin</title>
+    <title>Dashboard Admin</title>
 
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        body { background:#f4f4f4; padding:40px; }
-        .card-form { background:white; padding:30px; border-radius:12px; }
+        body {
+            background: #f4f6f9;
+        }
+
+        .admin-container {
+            margin-top: 120px; /* espaço abaixo do header */
+        }
+
+        .admin-card {
+            border-radius: 15px;
+            padding: 35px 25px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-icon {
+            font-size: 60px;
+            color: #4A90E2;
+            margin-bottom: 20px;
+        }
+
+        .btn-dashboard {
+            margin-top: 15px;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 10px;
+        }
     </style>
+
+    <!-- Ícones -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
 
-<div class="container mt-4">
-    <h1 class="fw-bold mb-4">Cadastro de Produto</h1>
+    <div class="container admin-container">
 
-    <?php if (isset($_SESSION['sucesso'])): ?>
-        <div class="alert alert-success alert-dismissible fade show">
-            <?php echo $_SESSION['sucesso']; unset($_SESSION['sucesso']); ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <?php endif; ?>
+        <h2 class="text-center mb-5">Painel Administrativo</h2>
 
-    <?php if (isset($_SESSION['erro'])): ?>
-        <div class="alert alert-danger alert-dismissible fade show">
-            <?php echo $_SESSION['erro']; unset($_SESSION['erro']); ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <?php endif; ?>
+        <div class="row justify-content-center">
 
-    <div class="card-form shadow">
+            <!-- CARD PRODUTOS -->
+            <div class="col-md-4 mb-4">
+                <div class="card admin-card shadow-sm text-center">
+                    <i class="fas fa-box-open admin-icon"></i>
+                    <h4>Gerenciar Produtos</h4>
+                    <p>Cadastrar, editar e visualizar produtos.</p>
 
-        <form method="POST" action="../../actions/produto/criar.php">
-
-            <label class="fw-bold">Nome do Produto</label>
-            <input type="text" name="nome" class="form-control mb-3" placeholder="Ex: Camisa Flamengo 2024" required>
-
-            <label class="fw-bold">Descrição</label>
-            <textarea name="descricao" class="form-control mb-3" rows="3" placeholder="Descrição do produto"></textarea>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <label class="fw-bold">Preço de Custo</label>
-                    <input type="number" name="preco_custo" step="0.01" class="form-control mb-3" placeholder="Ex: 100.00">
-                </div>
-                <div class="col-md-6">
-                    <label class="fw-bold">Preço de Venda</label>
-                    <input type="number" name="preco_venda" step="0.01" class="form-control mb-3" placeholder="Ex: 199.90" required>
+                    <a href="produtoCadastro.php" class="btn btn-primary w-100 btn-dashboard">
+                        Acessar Produtos
+                    </a>
                 </div>
             </div>
 
-            <label class="fw-bold">Estoque</label>
-            <input type="number" name="estoque" class="form-control mb-3" value="0" min="0">
+            <!-- CARD VENDAS -->
+            <div class="col-md-4 mb-4">
+                <div class="card admin-card shadow-sm text-center">
+                    <i class="fas fa-shopping-cart admin-icon"></i>
+                    <h4>Relatório de Vendas</h4>
+                    <p>Consultar vendas realizadas e seus detalhes.</p>
 
-            <label class="fw-bold">Categoria</label>
-            <select name="categoria_id" class="form-select mb-3" required>
-                <option value="">Selecione uma categoria</option>
-                <?php foreach ($categorias as $categoria): ?>
-                    <option value="<?php echo $categoria['id']; ?>">
-                        <?php echo htmlspecialchars($categoria['nome']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+                    <a href="adminVendas.php" class="btn btn-success w-100 btn-dashboard">
+                        Ver Vendas
+                    </a>
+                </div>
+            </div>
 
-            <label class="fw-bold">Fabricante</label>
-            <select name="fabricante_id" class="form-select mb-3" required>
-                <option value="">Selecione um fabricante</option>
-                <?php foreach ($fabricantes as $fabricante): ?>
-                    <option value="<?php echo $fabricante['id']; ?>">
-                        <?php echo htmlspecialchars($fabricante['nome']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-
-            <label class="fw-bold">Link da Imagem do Produto</label>
-            <input type="url" name="imagem" class="form-control mb-3" placeholder="https://exemplo.com/imagem.jpg">
-            <small class="text-muted d-block mb-3">Cole o link (URL) da imagem do produto</small>
-
-
-            <button type="submit" class="btn btn-dark w-100 fw-bold">Cadastrar Produto</button>
-        </form>
+        </div>
 
     </div>
-</div>
 
 </body>
 </html>

@@ -99,7 +99,7 @@ $vendas = VendaController::buscarPorUsuario($usuario['id']);
                                                         <strong><?php echo htmlspecialchars($item['produto_nome']); ?></strong> - 
                                                         Quantidade: <?php echo $item['quantidade']; ?> - 
                                                         Preço unitário: R$ <?php echo number_format($item['preco_unitario'], 2, ',', '.'); ?> - 
-                                                        Subtotal: R$ <?php echo number_format($item['preco_unitario'] * $item['quantidade'], 2, ',', '.'); ?>
+                                                        Subtotal: R$ <?php echo number_format($item['preco_unit'] * $item['quantidade'], 2, ',', '.'); ?>
                                                     </li>
                                                 <?php endforeach; ?>
                                             <?php endif; ?>

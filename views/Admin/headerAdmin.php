@@ -24,18 +24,6 @@ $usuario = AuthController::getUsuarioLogado();
             <ul class="navbar-nav">
 
                 <li class="nav-item">
-                    <form method="POST" action="produtosCadastrados.php" class="m-0 p-0">
-                        <button type="submit" class="nav-link btn btn-link text-light">Produtos Cadastrados</button>
-                    </form>
-                </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="adminVendas.php">
-                        Vendas
-                    </a>
-                </li>
-
-                <li class="nav-item">
                     <span class="nav-link text-light">Olá, <?php echo htmlspecialchars($usuario['nome']); ?></span>
                 </li>
 
