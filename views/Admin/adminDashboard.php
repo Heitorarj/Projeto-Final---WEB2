@@ -60,7 +60,6 @@
 
         <div class="row justify-content-center">
 
-            <!-- CARD PRODUTOS -->
             <div class="col-md-4 mb-4">
                 <div class="card admin-card shadow-sm text-center">
                     <i class="fas fa-box-open admin-icon"></i>
@@ -73,7 +72,6 @@
                 </div>
             </div>
 
-            <!-- CARD VENDAS -->
             <div class="col-md-4 mb-4">
                 <div class="card admin-card shadow-sm text-center">
                     <i class="fas fa-shopping-cart admin-icon"></i>
@@ -82,6 +80,30 @@
 
                     <a href="adminVendas.php" class="btn btn-success w-100 btn-dashboard">
                         Ver Vendas
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card admin-card shadow-sm text-center">
+                    <i class="fas fa-tags admin-icon"></i>
+                    <h4>Gerenciar Categorias</h4>
+                    <p>Criar, editar e administrar categorias de produtos.</p>
+
+                    <a href="categoriaCadastro.php" class="btn btn-warning w-100 btn-dashboard">
+                        Acessar Categorias
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card admin-card shadow-sm text-center">
+                    <i class="fas fa-industry admin-icon"></i>
+                    <h4>Gerenciar Fabricantes</h4>
+                    <p>Adicionar e editar fabricantes cadastrados.</p>
+
+                    <a href="fabricanteCadastro.php" class="btn btn-dark w-100 btn-dashboard">
+                        Acessar Fabricantes
                     </a>
                 </div>
             </div>

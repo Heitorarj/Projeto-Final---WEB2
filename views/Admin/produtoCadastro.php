@@ -26,7 +26,14 @@ $fabricantes = FabricanteController::listar();
 <body>
 
 <div class="container mt-4">
-    <h1 class="fw-bold mb-4">Cadastro de Produto</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">Cadastro de Produto</h1>
+
+        <!-- BOTÃO DE LISTAR PRODUTOS -->
+        <a href="produtosCadastrados.php" class="btn btn-primary fw-bold px-4">
+            Ver Produtos Cadastrados
+        </a>
+    </div>
 
     <?php if (isset($_SESSION['sucesso'])): ?>
         <div class="alert alert-success alert-dismissible fade show">
@@ -89,7 +96,6 @@ $fabricantes = FabricanteController::listar();
             <label class="fw-bold">Link da Imagem do Produto</label>
             <input type="url" name="imagem" class="form-control mb-3" placeholder="https://exemplo.com/imagem.jpg">
             <small class="text-muted d-block mb-3">Cole o link (URL) da imagem do produto</small>
-
 
             <button type="submit" class="btn btn-dark w-100 fw-bold">Cadastrar Produto</button>
         </form>
