@@ -247,10 +247,11 @@ class Venda implements iDao
     /**
      * Helper Methods
      */
+
     private static function salvarItensVenda(int $venda_id, array $itens): void
     {
-        $sql = "INSERT INTO itens_venda (venda_id, produto_id, quantidade, preco_unit)
-                VALUES (:venda_id, :produto_id, :quantidade, :preco_unit)";
+        $sql = "INSERT INTO itens_venda (venda_id, produto_id, quantidade)
+                VALUES (:venda_id, :produto_id, :quantidade)";
 
         try {
             $pdo = self::getPDO();
@@ -260,8 +261,7 @@ class Venda implements iDao
                 $stmt->execute([
                     ':venda_id' => $venda_id,
                     ':produto_id' => $item['produto_id'],
-                    ':quantidade' => $item['quantidade'],
-                    ':preco_unit' => $item['preco_unit']
+                    ':quantidade' => $item['quantidade']
                 ]);
             }
         } catch (PDOException $e) {

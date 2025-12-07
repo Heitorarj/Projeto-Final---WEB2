@@ -59,16 +59,16 @@ class ItemVenda implements iDao
 
     public static function create(array $data): int
     {
-        if (empty($data['venda_id']) || empty($data['produto_id']) || empty($data['quantidade']) || empty($data['preco_unit'])) {
-            throw new Exception("Venda, produto, quantidade e preço unitário são obrigatórios");
+        if (empty($data['venda_id']) || empty($data['produto_id']) || empty($data['quantidade'])) {
+            throw new Exception("Venda, produto e quantidade são obrigatórios");
         }
 
         if ($data['quantidade'] <= 0) {
             throw new Exception("Quantidade deve ser maior que zero");
         }
 
-        $sql = "INSERT INTO itens_venda (venda_id, produto_id, quantidade, preco_unit) 
-                VALUES (:venda_id, :produto_id, :quantidade, :preco_unit)";
+        $sql = "INSERT INTO itens_venda (venda_id, produto_id, quantidade) 
+                VALUES (:venda_id, :produto_id, :quantidade)";
 
         try {
             $pdo = self::getPDO();
@@ -77,8 +77,7 @@ class ItemVenda implements iDao
             $stmt->execute([
                 ':venda_id' => $data['venda_id'],
                 ':produto_id' => $data['produto_id'],
-                ':quantidade' => $data['quantidade'],
-                ':preco_unit' => $data['preco_unit']
+                ':quantidade' => $data['quantidade']
             ]);
 
             return (int) $pdo->lastInsertId();
@@ -124,11 +123,6 @@ class ItemVenda implements iDao
             }
             $fields[] = "quantidade = :quantidade";
             $params[':quantidade'] = $data['quantidade'];
-        }
-
-        if (isset($data['preco_unit'])) {
-            $fields[] = "preco_unit = :preco_unit";
-            $params[':preco_unit'] = $data['preco_unit'];
         }
 
         if (isset($data['produto_id'])) {
