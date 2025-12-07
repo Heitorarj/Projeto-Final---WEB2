@@ -47,6 +47,9 @@
             <label class="fw-bold">Nome do Fabricante:</label>
             <input type="text" name="nome" class="form-control mb-3" required>
 
+            <label class="fw-bold">Site do Fabricante:</label>
+            <input type="text" name="site" class="form-control mb-3" required>
+
             <button type="submit" class="btn btn-success w-100">Registrar Fabricante</button>
         </form>
 
