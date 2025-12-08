@@ -67,7 +67,7 @@
                         Editar
                     </a>
 
-                    <form action="../../actions/categoria/deleteCategoria.php" method="POST">
+                    <form class="form-excluir" action="../../actions/categoria/deleteCategoria.php" method="POST">
                     <input type="hidden" name="id" value="<?= $cat['id'] ?>">
                     <button type="submit" name="acao" value="excluir"
                      class="btn btn-danger btn-sm mt-1">
@@ -90,3 +90,17 @@
 
 </body>
 </html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+    const formularios = document.querySelectorAll('.form-excluir');
+    
+    formularios.forEach(form => {
+        form.addEventListener('submit', function(event) {
+            if (!confirm('Tem certeza que deseja excluir este fabricante?')) {
+                event.preventDefault();
+            }
+        });
+    });
+});
+</script>

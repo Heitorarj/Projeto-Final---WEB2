@@ -55,6 +55,10 @@
 
         </form>
 
+        <a href="listarCategorias.php" class="btn btn-secondary w-100 mt-3">
+            Voltar para Lista
+        </a>
+
     </div>
 </div>
 
