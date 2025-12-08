@@ -70,7 +70,7 @@ class FabricanteController
         }
     }
 
-    public static function atualizar(int $id): void
+    public static function atualizar(): void
     {
         self::startSession();
 
@@ -81,6 +81,10 @@ class FabricanteController
 
         try {
             $data = [];
+
+            if (isset($_POST['id'])) {
+                $id = $_POST['id'];
+            }
 
             if (isset($_POST['nome'])) {
                 $data['nome'] = $_POST['nome'];
@@ -93,30 +97,32 @@ class FabricanteController
             Fabricante::update($id, $data);
 
             $_SESSION['sucesso'] = "Fabricante atualizado com sucesso!";
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/listarFabricante.php');
             exit();
 
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/listarFabricante.php');
             exit();
         }
     }
 
-    public static function deletar(int $id): void
+    public static function deletar(): void
     {
         self::startSession();
 
         try {
+            $idS = $_POST['id'] ?? '';
+            $id = intval($idS);
             Fabricante::delete($id);
 
             $_SESSION['sucesso'] = "Fabricante excluído com sucesso!";
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/listarFabricante.php');
             exit();
 
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/listarFabricante.php');
             exit();
         }
     }

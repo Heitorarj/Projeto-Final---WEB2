@@ -44,7 +44,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="../../actions/categoria/processarCategoria.php" method="POST">
+        <form action="../../actions/categoria/salvarCategoria.php" method="POST">
 
             <label class="fw-bold">Nome da Categoria:</label>
             <input type="text" name="nome" class="form-control mb-3" required>

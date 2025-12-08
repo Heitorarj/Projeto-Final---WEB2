@@ -41,7 +41,7 @@
 
         <h3 class="text-center mb-4">Editar Fabricante</h3>
 
-        <form action="../../actions/fabricante/processarFabricante.php" method="POST">
+        <form action="../../actions/fabricante/editarFabricante.php" method="POST">
             
             <input type="hidden" name="id" value="<?= $fabricante['id'] ?>">
 

@@ -45,7 +45,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="../../actions/fabricante/processarFabricante.php" method="POST">
+        <form action="../../actions/fabricante/salvarFabricante.php" method="POST">
 
             <label class="fw-bold">Nome do Fabricante:</label>
             <input type="text" name="nome" class="form-control mb-3" required>
@@ -59,7 +59,7 @@
 
         </form>
 
-        <a href="listarFabricantes.php" class="btn btn-secondary w-100 mt-3">
+        <a href="listarFabricante.php" class="btn btn-secondary w-100 mt-3">
             Voltar para Lista
         </a>
 

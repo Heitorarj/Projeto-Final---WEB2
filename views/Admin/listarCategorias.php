@@ -67,11 +67,14 @@
                         Editar
                     </a>
 
-                    <a href="../../actions/categoria/processarCategoria.php?acao=excluir&id=<?= $cat['id'] ?>"
-                       class="btn btn-danger btn-sm"
-                       onclick="return confirm('Tem certeza que deseja excluir esta categoria?');">
-                        Excluir
-                    </a>
+                    <form action="../../actions/categoria/deleteCategoria.php" method="POST">
+                    <input type="hidden" name="id" value="<?= $cat['id'] ?>">
+                    <button type="submit" name="acao" value="excluir"
+                     class="btn btn-danger btn-sm mt-1">
+                         excluir
+                         
+                    </button>
+                    </form>
                 </td>
             </tr>
         <?php endforeach; ?>

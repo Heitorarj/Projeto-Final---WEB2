@@ -72,12 +72,14 @@
                         Editar
                     </a>
 
-                    <!-- Botão excluir → envia ao controller -->
-                    <a href="../../actions/fabricante/adminDashboard.php?acao=excluir&id=<?= $fab['id'] ?>"
-                       class="btn btn-danger btn-sm"
-                       onclick="return confirm('Tem certeza que deseja excluir este fabricante?');">
-                        Excluir
-                    </a>
+                    <form action="../../actions/fabricante/deleteFabricante.php" method="POST">
+                    <input type="hidden" name="id" value="<?= $fab['id'] ?>">
+                    <button type="submit" name="acao" value="excluir"
+                     class="btn btn-danger btn-sm mt-1">
+                         excluir
+                         
+                    </button>
+                    </form>
                 </td>
             </tr>
         <?php endforeach; ?>

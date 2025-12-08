@@ -65,17 +65,18 @@ class CategoriaController
         }
     }
 
-    public static function atualizar(int $id): void
+    public static function atualizar(): void
     {
         self::startSession();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../views/Admin/categoriaEditar.php');
             exit();
         }
 
         try {
             $nome = $_POST['nome'] ?? '';
+            $id = $_POST['id'] ?? '';
 
             if (empty($nome)) {
                 throw new Exception("Nome da categoria é obrigatório");
@@ -85,30 +86,38 @@ class CategoriaController
             Categoria::update($id, $data);
 
             $_SESSION['sucesso'] = "Categoria atualizada com sucesso!";
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/listarCategorias.php');
             exit();
 
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/categoriasEditar.php');
             exit();
         }
     }
 
-    public static function deletar(int $id): void
+    public static function deletar(): void
     {
         self::startSession();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ../../views/Admin/listarCategorias.php');
+            exit();
+        }
+
 
         try {
+            $idS = $_POST['id'] ?? '';
+            $id = intval($idS);
+
             Categoria::delete($id);
 
             $_SESSION['sucesso'] = "Categoria excluída com sucesso!";
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/listarCategorias.php');
             exit();
 
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            header('Location: ../views/Admin/adminDashboard.php');
+            header('Location: ../../views/Admin/adminDashboard.php');
             exit();
         }
     }

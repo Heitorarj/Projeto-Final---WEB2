@@ -41,7 +41,7 @@
 
         <h3 class="text-center mb-4">Editar Categoria</h3>
 
-        <form action="../../actions/categoria/processarCategoria.php" method="POST">
+        <form action="../../actions/categoria/editarCategoria.php" method="POST">
 
             <input type="hidden" name="id" value="<?= $categoria['id'] ?>">
 
