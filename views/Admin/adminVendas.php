@@ -4,8 +4,13 @@ include "headerAdmin.php";
 
 require_once __DIR__ . '/../../controllers/VendaController.php';
 
-$vendas = VendaController::listar();
-$estatisticas = VendaController::obterEstatisticas();
+// Coleta dos filtros
+$dataInicial = $_GET['data_inicial'] ?? null;
+$dataFinal   = $_GET['data_final'] ?? null;
+
+// Métodos atualizados aceitando filtros
+$vendas = VendaController::listar($dataInicial, $dataFinal);
+$estatisticas = VendaController::obterEstatisticas($dataInicial, $dataFinal);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -38,24 +43,49 @@ $estatisticas = VendaController::obterEstatisticas();
     
     <h1 class="fw-bold mb-4">Vendas Realizadas</h1>
 
+    <!-- Filtro de datas -->
+    <div class="filtro-box shadow mb-4">
+        <form method="GET" class="row g-3">
+
+            <div class="col-md-4">
+                <label class="form-label">Data Inicial:</label>
+                <input type="date" name="data_inicial" 
+                       value="<?php echo $dataInicial; ?>" 
+                       class="form-control">
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Data Final:</label>
+                <input type="date" name="data_final" 
+                       value="<?php echo $dataFinal; ?>" 
+                       class="form-control">
+            </div>
+
+            <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-primary w-100">Filtrar</button>
+            </div>
+
+        </form>
+    </div>
+
     <!-- Estatísticas -->
     <div class="row g-4 mb-4">
         <div class="col-md-4">
             <div class="stat-card shadow">
                 <p class="text-muted mb-2">Total de Vendas</p>
-                <h3><?php echo $estatisticas['total_vendas']; ?></h3>
+                <h3><?php echo $estatisticas['total_vendas'] ?? 0; ?></h3>
             </div>
         </div>
         <div class="col-md-4">
             <div class="stat-card shadow">
                 <p class="text-muted mb-2">Valor Total</p>
-                <h3>R$ <?php echo number_format($estatisticas['valor_total'], 2, ',', '.'); ?></h3>
+                <h3>R$ <?php echo number_format($estatisticas['valor_total'] ?? 0, 2, ',', '.'); ?></h3>
             </div>
         </div>
         <div class="col-md-4">
             <div class="stat-card shadow">
                 <p class="text-muted mb-2">Ticket Médio</p>
-                <h3>R$ <?php echo number_format($estatisticas['ticket_medio'], 2, ',', '.'); ?></h3>
+                <h3>R$ <?php echo number_format($estatisticas['ticket_medio'] ?? 0, 2, ',', '.'); ?></h3>
             </div>
         </div>
     </div>
@@ -63,7 +93,7 @@ $estatisticas = VendaController::obterEstatisticas();
     <!-- Tabela de vendas -->
     <?php if (empty($vendas)): ?>
         <div class="alert alert-info">
-            Nenhuma venda realizada ainda.
+            Nenhuma venda encontrada para o período selecionado.
         </div>
     <?php else: ?>
         <div class="table-responsive shadow">
