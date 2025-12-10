@@ -24,7 +24,7 @@ $usuario = AuthController::getUsuarioLogado();
             <ul class="navbar-nav">
 
                 <li class="nav-item">
-                    <span class="nav-link text-light">Olá, <?php echo htmlspecialchars($usuario['nome']); ?></span>
+                    <a class="nav-link text-light" href="sobre.php">Sobre</a>
                 </li>
 
                 <li class="nav-item">

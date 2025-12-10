@@ -186,7 +186,6 @@ $fabricantes = FabricanteController::listar();
                     <?php endif; ?>
                 </div>
 
-                <!-- Características do Produto -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold border-bottom pb-2 mb-0">
@@ -225,7 +224,6 @@ $fabricantes = FabricanteController::listar();
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <!-- Característica inicial se não houver características -->
                             <div class="caracteristica-item" data-index="0">
                                 <div class="row">
                                     <div class="col-md-5">

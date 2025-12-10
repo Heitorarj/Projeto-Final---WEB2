@@ -16,7 +16,6 @@ $produtos = ProdutoController::listar();
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
@@ -126,7 +125,6 @@ $produtos = ProdutoController::listar();
                                         alt="Sem imagem">
                                 <?php endif; ?>
 
-                                <!-- Badge de Estoque -->
                                 <span class="badge <?php echo $produto['estoque'] > 10 ? 'bg-success' : ($produto['estoque'] > 0 ? 'bg-warning' : 'bg-danger'); ?> badge-estoque">
                                     <?php echo $produto['estoque']; ?> em estoque
                                 </span>
@@ -135,14 +133,12 @@ $produtos = ProdutoController::listar();
                             <div class="card-body d-flex flex-column">
                                 <h6 class="card-title mb-2 fw-bold"><?php echo htmlspecialchars($produto['nome']); ?></h6>
 
-                                <!-- Descrição -->
                                 <?php if (!empty($produto['descricao'])): ?>
                                     <p class="card-text text-muted small descricao-truncada mb-2">
                                         <?php echo htmlspecialchars($produto['descricao']); ?>
                                     </p>
                                 <?php endif; ?>
 
-                                <!-- Preços -->
                                 <div class="mb-2">
                                     <span class="text-success fw-bold h5">
                                         R$ <?php echo number_format($produto['preco_venda'], 2, ',', '.'); ?>
@@ -154,7 +150,6 @@ $produtos = ProdutoController::listar();
                                     <?php endif; ?>
                                 </div>
 
-                                <!-- Categoria e Fabricante -->
                                 <div class="mb-3">
                                     <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">
                                         <?php echo htmlspecialchars($produto['categoria_nome'] ?? 'Sem categoria'); ?>
@@ -164,7 +159,6 @@ $produtos = ProdutoController::listar();
                                     </span>
                                 </div>
 
-                                <!-- Características -->
                                 <?php if (!empty($produto['caracteristicas'])): ?>
                                     <div class="mt-auto mb-3">
                                         <small class="fw-bold text-muted d-block mb-1">Características:</small>
@@ -196,7 +190,6 @@ $produtos = ProdutoController::listar();
                                     </div>
                                 <?php endif; ?>
 
-                                <!-- Botões de Ação -->
                                 <div class="d-flex gap-2 mt-auto">
                                     <a href="produtoEditar.php?id=<?php echo $produto['id']; ?>"
                                         class="btn btn-outline-primary btn-sm flex-fill">

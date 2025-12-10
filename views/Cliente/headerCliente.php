@@ -20,24 +20,31 @@ $usuario = AuthController::getUsuarioLogado();
                  alt="Início" style="width:28px; height:28px;">
         </a>
 
+        <button class="navbar-toggler text-bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
         <div id="navbarNav" class="collapse navbar-collapse justify-content-end">
             <ul class="navbar-nav">
+
+                <!-- Link Sobre -->
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="sobre.php">Sobre</a>
+                </li>
 
                 <li class="nav-item">
                     <form method="POST" action="comprasCliente.php" class="m-0 p-0">
                         <button type="submit" class="nav-link btn btn-link text-light">Minhas Compras</button>
                     </form>
                 </li>
-                
+
                 <li class="nav-item">
                     <a class="nav-link text-light" href="clienteCarrinho.php">
                         Carrinho
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <span class="nav-link text-light">Olá, <?php echo htmlspecialchars($usuario['nome']); ?></span>
-                </li>
+                <!-- Removido o "Olá, usuário" -->
 
                 <li class="nav-item">
                     <a href="../../actions/auth/logout.php" class="nav-link text-light">Sair</a>
