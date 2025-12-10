@@ -57,6 +57,15 @@ class ProdutoController
             $categoria_id = $_POST['categoria_id'] ?? null;
             $imagem = $_POST['imagem'] ?? '';
 
+            // Validações básicas
+            if (empty($nome) || empty($preco_venda)) {
+                throw new Exception("Nome e preço de venda são obrigatórios");
+            }
+
+            if (empty($fabricante_id) || empty($categoria_id)) {
+                throw new Exception("Fabricante e categoria são obrigatórios");
+            }
+
             $data = [
                 'nome' => $nome,
                 'descricao' => $descricao,
@@ -68,8 +77,15 @@ class ProdutoController
                 'categoria_id' => (int)$categoria_id
             ];
 
+            // Processar características
             if (isset($_POST['caracteristicas']) && is_array($_POST['caracteristicas'])) {
-                $data['caracteristicas'] = $_POST['caracteristicas'];
+                // Filtrar características vazias
+                $caracteristicasFiltradas = array_filter($_POST['caracteristicas'], function ($caracteristica) {
+                    return !empty(trim($caracteristica['nome'] ?? '')) && !empty(trim($caracteristica['valor'] ?? ''));
+                });
+
+                // Reindexar array
+                $data['caracteristicas'] = array_values($caracteristicasFiltradas);
             }
 
             $produto_id = Produto::create($data);
@@ -77,7 +93,6 @@ class ProdutoController
             $_SESSION['sucesso'] = "Produto cadastrado com sucesso!";
             header('Location: ../../views/Admin/produtosCadastrados.php');
             exit();
-
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
             header('Location: ../../views/Admin/adminDashboard.php');
@@ -85,7 +100,7 @@ class ProdutoController
         }
     }
 
-    public static function atualizar(int $id): void
+    public static function atualizar(): void
     {
         self::startSession();
 
@@ -95,6 +110,13 @@ class ProdutoController
         }
 
         try {
+            // Obter o ID do produto do POST, não do parâmetro
+            $id = $_POST['id'] ?? 0;
+
+            if (!$id) {
+                throw new Exception("ID do produto não fornecido");
+            }
+
             $data = [];
 
             if (isset($_POST['nome'])) {
@@ -129,8 +151,15 @@ class ProdutoController
                 $data['imagem'] = $_POST['imagem'];
             }
 
+            // Processar características
             if (isset($_POST['caracteristicas']) && is_array($_POST['caracteristicas'])) {
-                $data['caracteristicas'] = $_POST['caracteristicas'];
+                // Filtrar características vazias
+                $caracteristicasFiltradas = array_filter($_POST['caracteristicas'], function ($caracteristica) {
+                    return !empty(trim($caracteristica['nome'] ?? '')) && !empty(trim($caracteristica['valor'] ?? ''));
+                });
+
+                // Reindexar array para garantir índices sequenciais
+                $data['caracteristicas'] = array_values($caracteristicasFiltradas);
             }
 
             Produto::update($id, $data);
@@ -138,10 +167,11 @@ class ProdutoController
             $_SESSION['sucesso'] = "Produto atualizado com sucesso!";
             header('Location: ../../views/Admin/produtosCadastrados.php');
             exit();
-
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            header('Location: ../../views/Admin/produtosCadastrados.php');
+            // Redirecionar de volta para a página de edição com o ID
+            $id = $_POST['id'] ?? 0;
+            header('Location: ../../views/Admin/editarProduto.php?id=' . $id);
             exit();
         }
     }
@@ -156,7 +186,6 @@ class ProdutoController
             $_SESSION['sucesso'] = "Produto excluído com sucesso!";
             header('Location: ../../views/Admin/produtosCadastrados.php');
             exit();
-
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
             header('Location: ../../views/Admin/produtosCadastrados.php');
@@ -207,5 +236,4 @@ class ProdutoController
             return [];
         }
     }
-
 }

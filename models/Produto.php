@@ -266,9 +266,20 @@ class Produto implements iDao
             $stmt = $pdo->prepare($sql);
             $result = $stmt->execute($params);
 
+            // Atualizar características se existirem
             if (isset($data['caracteristicas']) && is_array($data['caracteristicas'])) {
+                // Filtrar características válidas
+                $caracteristicasValidas = array_filter($data['caracteristicas'], function ($caracteristica) {
+                    return !empty(trim($caracteristica['nome'] ?? '')) && !empty(trim($caracteristica['valor'] ?? ''));
+                });
+
+                // Primeiro remover características antigas
                 self::removerCaracteristicas($id);
-                self::salvarCaracteristicas($id, $data['caracteristicas']);
+
+                // Depois adicionar as novas (apenas se houver características válidas)
+                if (!empty($caracteristicasValidas)) {
+                    self::salvarCaracteristicas($id, array_values($caracteristicasValidas));
+                }
             }
 
             return $result;
@@ -356,12 +367,18 @@ class Produto implements iDao
     private static function salvarCaracteristicas(int $produto_id, array $caracteristicas): void
     {
         foreach ($caracteristicas as $caracteristica) {
+            // Validar se a característica tem nome e valor não vazios
             if (!empty($caracteristica['nome']) && !empty($caracteristica['valor'])) {
-                Caracteristica::create([
-                    'nome' => $caracteristica['nome'],
-                    'valor' => $caracteristica['valor'],
-                    'produto_id' => $produto_id
-                ]);
+                $nome = trim($caracteristica['nome']);
+                $valor = trim($caracteristica['valor']);
+
+                if (!empty($nome) && !empty($valor)) {
+                    Caracteristica::create([
+                        'nome' => $nome,
+                        'valor' => $valor,
+                        'produto_id' => $produto_id
+                    ]);
+                }
             }
         }
     }
@@ -505,17 +522,23 @@ class Produto implements iDao
     public static function getProdutosComEstoque(): array
     {
         $sql = "SELECT p.*, f.nome as fabricante_nome, cat.nome as categoria_nome
-                FROM produtos p
-                LEFT JOIN fabricantes f ON p.fabricante_id = f.id
-                LEFT JOIN categorias cat ON p.categoria_id = cat.id
-                WHERE p.estoque > 0
-                ORDER BY p.nome ASC";
+            FROM produtos p
+            LEFT JOIN fabricantes f ON p.fabricante_id = f.id
+            LEFT JOIN categorias cat ON p.categoria_id = cat.id
+            WHERE p.estoque > 0
+            ORDER BY p.nome ASC";
 
         try {
             $pdo = self::getPDO();
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($produtos as &$produto) {
+                $produto['caracteristicas'] = self::buscarCaracteristicas($produto['id']);
+            }
+
+            return $produtos;
         } catch (PDOException $e) {
             throw new Exception("Erro ao buscar produtos com estoque: " . $e->getMessage());
         }
