@@ -16,10 +16,59 @@ class VendaController
         }
     }
 
-    public static function listar(): array
+    public static function listar(?string $data_inicial = null, ?string $data_final = null): array
     {
         try {
+            if ($data_inicial && $data_final) {
+                return Venda::findByPeriodo($data_inicial, $data_final);
+            }
+
             return Venda::findAll();
+        } catch (Exception $e) {
+            self::startSession();
+            $_SESSION['erro'] = $e->getMessage();
+            return [];
+        }
+    }
+
+    public static function obterEstatisticas(?string $data_inicial = null, ?string $data_final = null): array
+    {
+        try {
+            $total_vendas = Venda::count();
+            $valor_total = Venda::getValorTotalVendas();
+
+            if ($data_inicial && $data_final) {
+                $vendas_periodo = Venda::findByPeriodo($data_inicial, $data_final);
+                $total_vendas = count($vendas_periodo);
+                $valor_total = 0;
+
+                foreach ($vendas_periodo as $venda) {
+                    $valor_total += (float)$venda['valor_total'];
+                }
+            }
+
+            $ticket_medio = $total_vendas > 0 ? $valor_total / $total_vendas : 0;
+
+            return [
+                'total_vendas' => $total_vendas,
+                'valor_total' => $valor_total,
+                'ticket_medio' => $ticket_medio
+            ];
+        } catch (Exception $e) {
+            self::startSession();
+            $_SESSION['erro'] = $e->getMessage();
+            return [
+                'total_vendas' => 0,
+                'valor_total' => 0,
+                'ticket_medio' => 0
+            ];
+        }
+    }
+
+    public static function buscarPorPeriodo(string $data_inicio, string $data_fim): array
+    {
+        try {
+            return Venda::findByPeriodo($data_inicio, $data_fim);
         } catch (Exception $e) {
             self::startSession();
             $_SESSION['erro'] = $e->getMessage();
@@ -67,7 +116,7 @@ class VendaController
                 $quantidade = (int)$item['quantidade'];
 
                 $produto = Produto::read($produto_id);
-                
+
                 if (!$produto) {
                     throw new Exception("Produto não encontrado");
                 }
@@ -98,7 +147,6 @@ class VendaController
             $_SESSION['sucesso'] = "Compra realizada com sucesso!";
             header('Location: ../../views/Cliente/comprasCliente.php');
             exit();
-
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
             header('Location: ../../views/Cliente/clienteCarrinho.php');
@@ -116,40 +164,6 @@ class VendaController
             return [];
         }
     }
-
-    public static function buscarPorPeriodo(string $data_inicio, string $data_fim): array
-    {
-        try {
-            return Venda::findByPeriodo($data_inicio, $data_fim);
-        } catch (Exception $e) {
-            self::startSession();
-            $_SESSION['erro'] = $e->getMessage();
-            return [];
-        }
-    }
-
-    public static function obterEstatisticas(): array
-{
-    try {
-        $total_vendas = Venda::count();
-        $valor_total = Venda::getValorTotalVendas();
-        $ticket_medio = $total_vendas > 0 ? $valor_total / $total_vendas : 0;
-
-        return [
-            'total_vendas' => $total_vendas,
-            'valor_total' => $valor_total,
-            'ticket_medio' => $ticket_medio
-        ];
-    } catch (Exception $e) {
-        self::startSession();
-        $_SESSION['erro'] = $e->getMessage();
-        return [
-            'total_vendas' => 0,
-            'valor_total' => 0,
-            'ticket_medio' => 0
-        ];
-    }
-}
 
     public static function adicionarAoCarrinho(int $produto_id, int $quantidade = 1): void
     {
@@ -183,7 +197,6 @@ class VendaController
             }
 
             $_SESSION['sucesso'] = "Produto adicionado ao carrinho!";
-
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
         }
@@ -223,7 +236,6 @@ class VendaController
                 $_SESSION['carrinho'][$produto_id]['quantidade'] = $quantidade;
                 $_SESSION['sucesso'] = "Quantidade atualizada!";
             }
-
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
         }

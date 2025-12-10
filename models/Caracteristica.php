@@ -71,7 +71,6 @@ class Caracteristica implements iDao
 
     public static function create(array $data): int
     {
-        // Validações
         if (empty($data['nome']) || empty($data['valor']) || empty($data['produto_id'])) {
             throw new Exception("Nome, valor e produto_id são obrigatórios");
         }

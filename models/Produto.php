@@ -139,7 +139,6 @@ class Produto implements iDao
 
     public static function create(array $data): int
     {
-        // Validações básicas
         if (empty($data['nome']) || empty($data['preco_venda'])) {
             throw new Exception("Nome e preço de venda são obrigatórios");
         }
@@ -175,7 +174,6 @@ class Produto implements iDao
 
             return $produto_id;
         } catch (PDOException $e) {
-            // Verifica se é erro de chave estrangeira
             if ($e->getCode() == 23000) {
                 throw new Exception("Fabricante ou categoria inválida");
             }
@@ -266,17 +264,13 @@ class Produto implements iDao
             $stmt = $pdo->prepare($sql);
             $result = $stmt->execute($params);
 
-            // Atualizar características se existirem
             if (isset($data['caracteristicas']) && is_array($data['caracteristicas'])) {
-                // Filtrar características válidas
                 $caracteristicasValidas = array_filter($data['caracteristicas'], function ($caracteristica) {
                     return !empty(trim($caracteristica['nome'] ?? '')) && !empty(trim($caracteristica['valor'] ?? ''));
                 });
 
-                // Primeiro remover características antigas
                 self::removerCaracteristicas($id);
 
-                // Depois adicionar as novas (apenas se houver características válidas)
                 if (!empty($caracteristicasValidas)) {
                     self::salvarCaracteristicas($id, array_values($caracteristicasValidas));
                 }
@@ -367,7 +361,6 @@ class Produto implements iDao
     private static function salvarCaracteristicas(int $produto_id, array $caracteristicas): void
     {
         foreach ($caracteristicas as $caracteristica) {
-            // Validar se a característica tem nome e valor não vazios
             if (!empty($caracteristica['nome']) && !empty($caracteristica['valor'])) {
                 $nome = trim($caracteristica['nome']);
                 $valor = trim($caracteristica['valor']);

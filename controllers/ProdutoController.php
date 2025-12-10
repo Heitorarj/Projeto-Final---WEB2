@@ -57,7 +57,6 @@ class ProdutoController
             $categoria_id = $_POST['categoria_id'] ?? null;
             $imagem = $_POST['imagem'] ?? '';
 
-            // Validações básicas
             if (empty($nome) || empty($preco_venda)) {
                 throw new Exception("Nome e preço de venda são obrigatórios");
             }
@@ -77,14 +76,11 @@ class ProdutoController
                 'categoria_id' => (int)$categoria_id
             ];
 
-            // Processar características
             if (isset($_POST['caracteristicas']) && is_array($_POST['caracteristicas'])) {
-                // Filtrar características vazias
                 $caracteristicasFiltradas = array_filter($_POST['caracteristicas'], function ($caracteristica) {
                     return !empty(trim($caracteristica['nome'] ?? '')) && !empty(trim($caracteristica['valor'] ?? ''));
                 });
 
-                // Reindexar array
                 $data['caracteristicas'] = array_values($caracteristicasFiltradas);
             }
 
@@ -110,7 +106,6 @@ class ProdutoController
         }
 
         try {
-            // Obter o ID do produto do POST, não do parâmetro
             $id = $_POST['id'] ?? 0;
 
             if (!$id) {
@@ -151,14 +146,11 @@ class ProdutoController
                 $data['imagem'] = $_POST['imagem'];
             }
 
-            // Processar características
             if (isset($_POST['caracteristicas']) && is_array($_POST['caracteristicas'])) {
-                // Filtrar características vazias
                 $caracteristicasFiltradas = array_filter($_POST['caracteristicas'], function ($caracteristica) {
                     return !empty(trim($caracteristica['nome'] ?? '')) && !empty(trim($caracteristica['valor'] ?? ''));
                 });
 
-                // Reindexar array para garantir índices sequenciais
                 $data['caracteristicas'] = array_values($caracteristicasFiltradas);
             }
 
@@ -169,7 +161,6 @@ class ProdutoController
             exit();
         } catch (Exception $e) {
             $_SESSION['erro'] = $e->getMessage();
-            // Redirecionar de volta para a página de edição com o ID
             $id = $_POST['id'] ?? 0;
             header('Location: ../../views/Admin/editarProduto.php?id=' . $id);
             exit();
