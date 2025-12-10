@@ -79,7 +79,7 @@ $produtos = ProdutoController::listar();
             <h1 class="fw-bold">Produtos Cadastrados</h1>
 
             <div>
-                <a href="adminDashboard.php" class="btn btn-primary fw-bold px-4 me-2">
+                <a href="produtoCadastro.php" class="btn btn-primary fw-bold px-4 me-2">
                     <i class="bi bi-plus-circle"></i> Cadastrar Novo
                 </a>
                 <span class="badge bg-secondary"><?php echo count($produtos); ?> produtos</span>
