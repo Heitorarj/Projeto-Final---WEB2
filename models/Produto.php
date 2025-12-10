@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../interfaces/iDao.php';
+require_once __DIR__ . '/Caracteristica.php';
+
 class Produto implements iDao
 {
     private int $id;
@@ -117,14 +119,11 @@ class Produto implements iDao
         $this->categoria = $categoria;
     }
 
-    public function adicionarCaracteristica(string $nome, string $valor): void
+    public function adicionarCaracteristica(Caracteristica $caracteristica): void
     {
-        $caracteristica = new Caracteristica();
-        $caracteristica->setNome($nome);
-        $caracteristica->setValor($valor);
+        $caracteristica->setProdutoId($this->id);
         $this->caracteristicas[] = $caracteristica;
     }
-
 
     /** 
      * Database Connection
@@ -170,9 +169,7 @@ class Produto implements iDao
             $stmt->execute($params);
             $produto_id = (int) $pdo->lastInsertId();
 
-            // Salvar características se existirem
             if (!empty($data['caracteristicas']) && is_array($data['caracteristicas'])) {
-                // Formato esperado: $data['caracteristicas'] = [['nome' => '...', 'valor' => '...'], ...]
                 self::salvarCaracteristicas($produto_id, $data['caracteristicas']);
             }
 
@@ -205,7 +202,6 @@ class Produto implements iDao
                 return null;
             }
 
-            // Buscar características do produto
             $produto['caracteristicas'] = self::buscarCaracteristicas($id);
 
             return $produto;
@@ -260,7 +256,7 @@ class Produto implements iDao
         }
 
         if (empty($fields)) {
-            return false; // Nada para atualizar
+            return false;
         }
 
         $sql = "UPDATE produtos SET " . implode(', ', $fields) . " WHERE id = :id";
@@ -270,11 +266,8 @@ class Produto implements iDao
             $stmt = $pdo->prepare($sql);
             $result = $stmt->execute($params);
 
-            // Atualizar características se existirem
-            if (!empty($data['caracteristicas']) && is_array($data['caracteristicas'])) {
-                // Primeiro remover características antigas
+            if (isset($data['caracteristicas']) && is_array($data['caracteristicas'])) {
                 self::removerCaracteristicas($id);
-                // Depois adicionar as novas
                 self::salvarCaracteristicas($id, $data['caracteristicas']);
             }
 
@@ -286,15 +279,12 @@ class Produto implements iDao
 
     public static function delete(int $id): bool
     {
-        // Primeiro verificar se o produto tem vendas associadas
         $sql_check = "SELECT COUNT(*) as total FROM itens_venda WHERE produto_id = :id";
-        $sql_delete_caracteristicas = "DELETE FROM caracteristicas WHERE produto_id = :produto_id";
         $sql_delete = "DELETE FROM produtos WHERE id = :id";
 
         try {
             $pdo = self::getPDO();
 
-            // Verificar se existem vendas associadas
             $stmt_check = $pdo->prepare($sql_check);
             $stmt_check->execute([':id' => $id]);
             $result = $stmt_check->fetch(PDO::FETCH_ASSOC);
@@ -305,11 +295,8 @@ class Produto implements iDao
 
             $pdo->beginTransaction();
 
-            // Deletar características associadas (ON DELETE CASCADE deve lidar com isso, mas fazemos manualmente para segurança)
-            $stmt_caracteristicas = $pdo->prepare($sql_delete_caracteristicas);
-            $stmt_caracteristicas->execute([':produto_id' => $id]);
+            self::removerCaracteristicas($id);
 
-            // Deletar produto
             $stmt = $pdo->prepare($sql_delete);
             $stmt->execute([':id' => $id]);
 
@@ -337,7 +324,6 @@ class Produto implements iDao
             $stmt->execute();
             $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Buscar características para cada produto (opcional - pode ser caro para muitos produtos)
             foreach ($produtos as &$produto) {
                 $produto['caracteristicas'] = self::buscarCaracteristicas($produto['id']);
             }
@@ -364,55 +350,36 @@ class Produto implements iDao
     }
 
     /**
-     * Helper Methods (privados para auxiliar os métodos DAO)
+     * Helper Methods para gerenciar características
      */
 
     private static function salvarCaracteristicas(int $produto_id, array $caracteristicas): void
     {
-        $sql = "INSERT INTO caracteristicas (produto_id, nome, valor) 
-                VALUES (:produto_id, :nome, :valor)";
-
-        try {
-            $pdo = self::getPDO();
-            $stmt = $pdo->prepare($sql);
-
-            foreach ($caracteristicas as $caracteristica) {
-                $stmt->execute([
-                    ':produto_id' => $produto_id,
-                    ':nome' => $caracteristica['nome'],
-                    ':valor' => $caracteristica['valor']
+        foreach ($caracteristicas as $caracteristica) {
+            if (!empty($caracteristica['nome']) && !empty($caracteristica['valor'])) {
+                Caracteristica::create([
+                    'nome' => $caracteristica['nome'],
+                    'valor' => $caracteristica['valor'],
+                    'produto_id' => $produto_id
                 ]);
             }
-        } catch (PDOException $e) {
-            throw new Exception("Erro ao salvar características do produto: " . $e->getMessage());
         }
     }
 
     private static function buscarCaracteristicas(int $produto_id): array
     {
-        $sql = "SELECT id, nome, valor 
-                FROM caracteristicas 
-                WHERE produto_id = :produto_id";
-
         try {
-            $pdo = self::getPDO();
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([':produto_id' => $produto_id]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            throw new Exception("Erro ao buscar características do produto: " . $e->getMessage());
+            return Caracteristica::findByProdutoId($produto_id);
+        } catch (Exception $e) {
+            return [];
         }
     }
 
     private static function removerCaracteristicas(int $produto_id): void
     {
-        $sql = "DELETE FROM caracteristicas WHERE produto_id = :produto_id";
-
         try {
-            $pdo = self::getPDO();
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([':produto_id' => $produto_id]);
-        } catch (PDOException $e) {
+            Caracteristica::deleteByProdutoId($produto_id);
+        } catch (Exception $e) {
             throw new Exception("Erro ao remover características do produto: " . $e->getMessage());
         }
     }
@@ -445,7 +412,7 @@ class Produto implements iDao
         $sql = "SELECT p.*, f.nome as fabricante_nome, cat.nome as categoria_nome
                 FROM produtos p
                 LEFT JOIN fabricantes f ON p.fabricante_id = f.id
-                LEFT JOIN categorisa cat ON p.categoria_id = cat.id
+                LEFT JOIN categorias cat ON p.categoria_id = cat.id
                 WHERE p.fabricante_id = :fabricante_id
                 ORDER BY p.nome ASC";
 

@@ -5,6 +5,7 @@ class Caracteristica implements iDao
     private int $id;
     private string $nome;
     private string $valor;
+    private int $produto_id;
 
 
     /**
@@ -26,6 +27,11 @@ class Caracteristica implements iDao
         return $this->valor;
     }
 
+    public function getProdutoId(): int
+    {
+        return $this->produto_id;
+    }
+
     /**
      * Setters
      */
@@ -45,6 +51,11 @@ class Caracteristica implements iDao
         $this->valor = $valor;
     }
 
+    public function setProdutoId(int $produto_id): void
+    {
+        $this->produto_id = $produto_id;
+    }
+
     /**
      * Database Connection
      */
@@ -61,12 +72,12 @@ class Caracteristica implements iDao
     public static function create(array $data): int
     {
         // Validações
-        if (empty($data['nome']) || empty($data['valor'])) {
-            throw new Exception("Nome e valor são obrigatórios");
+        if (empty($data['nome']) || empty($data['valor']) || empty($data['produto_id'])) {
+            throw new Exception("Nome, valor e produto_id são obrigatórios");
         }
 
-        $sql = "INSERT INTO caracteristicas (nome, valor) 
-                VALUES (:nome, :valor)";
+        $sql = "INSERT INTO caracteristicas (nome, valor, produto_id) 
+                VALUES (:nome, :valor, :produto_id)";
 
         try {
             $pdo = self::getPDO();
@@ -74,7 +85,8 @@ class Caracteristica implements iDao
 
             $stmt->execute([
                 ':nome' => $data['nome'],
-                ':valor' => $data['valor']
+                ':valor' => $data['valor'],
+                ':produto_id' => $data['produto_id']
             ]);
 
             return (int) $pdo->lastInsertId();
@@ -85,7 +97,7 @@ class Caracteristica implements iDao
 
     public static function read(int $id): ?array
     {
-        $sql = "SELECT id, nome, valor 
+        $sql = "SELECT id, nome, valor, produto_id 
                 FROM caracteristicas 
                 WHERE id = :id";
 
@@ -116,8 +128,13 @@ class Caracteristica implements iDao
             $params[':valor'] = $data['valor'];
         }
 
+        if (isset($data['produto_id'])) {
+            $fields[] = "produto_id = :produto_id";
+            $params[':produto_id'] = $data['produto_id'];
+        }
+
         if (empty($fields)) {
-            return false; // Nada para atualizar
+            return false;
         }
 
         $sql = "UPDATE caracteristicas SET " . implode(', ', $fields) . " WHERE id = :id";
@@ -144,9 +161,22 @@ class Caracteristica implements iDao
         }
     }
 
+    public static function deleteByProdutoId(int $produto_id): bool
+    {
+        $sql = "DELETE FROM caracteristicas WHERE produto_id = :produto_id";
+
+        try {
+            $pdo = self::getPDO();
+            $stmt = $pdo->prepare($sql);
+            return $stmt->execute([':produto_id' => $produto_id]);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao deletar características do produto: " . $e->getMessage());
+        }
+    }
+
     public static function findAll(): array
     {
-        $sql = "SELECT id, nome, valor 
+        $sql = "SELECT id, nome, valor, produto_id 
                 FROM caracteristicas 
                 ORDER BY nome ASC";
 
@@ -179,9 +209,26 @@ class Caracteristica implements iDao
      * Additional Methods
      */
 
+    public static function findByProdutoId(int $produto_id): array
+    {
+        $sql = "SELECT id, nome, valor, produto_id 
+                FROM caracteristicas 
+                WHERE produto_id = :produto_id 
+                ORDER BY nome ASC";
+
+        try {
+            $pdo = self::getPDO();
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':produto_id' => $produto_id]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar características por produto: " . $e->getMessage());
+        }
+    }
+
     public static function findByNome(string $nome): ?array
     {
-        $sql = "SELECT id, nome, valor 
+        $sql = "SELECT id, nome, valor, produto_id 
                 FROM caracteristicas 
                 WHERE nome = :nome 
                 LIMIT 1";
@@ -200,7 +247,7 @@ class Caracteristica implements iDao
 
     public static function findByValor(string $valor): array
     {
-        $sql = "SELECT id, nome, valor 
+        $sql = "SELECT id, nome, valor, produto_id 
                 FROM caracteristicas 
                 WHERE valor LIKE :valor 
                 ORDER BY nome ASC";
