@@ -79,7 +79,6 @@ session_start();
                     <label class="fw-bold">Tipo de Usuário</label>
                     <select name="tipo" class="form-select mb-4" required>
                         <option value="0">Cliente</option>
-                        <option value="1">Administrador</option>
                     </select>
 
                     <button class="btn btn-custom w-100">Cadastrar</button>

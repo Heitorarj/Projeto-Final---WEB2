@@ -115,8 +115,12 @@ class VendaController
                 $produto_id = (int)$item['produto_id'];
                 $quantidade = (int)$item['quantidade'];
 
-                $produto = Produto::read($produto_id);
+                self::removerDoCarrinho($produto_id);
 
+                $produto = Produto::read($produto_id);
+                
+                Produto::updateEstoque($produto_id, $quantidade);
+                
                 if (!$produto) {
                     throw new Exception("Produto não encontrado");
                 }

@@ -282,6 +282,30 @@ class Produto implements iDao
         }
     }
 
+    public static function updateEstoque(int $id, int $qt): bool
+{
+    
+    if ($estoque < 0) {
+        throw new InvalidArgumentException("O valor do estoque não pode ser negativo");
+    }  
+
+    $produto = self::read($id);
+    $estoque = $produto['estoque'];
+
+    $estoque = $estoque-$qt;
+
+    $sql = "UPDATE produtos SET estoque = :estoque WHERE id = :id";
+    $params = [':estoque' => $estoque, ':id' => $id];
+
+    try {
+        $pdo = self::getPDO();
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute($params);
+    } catch (PDOException $e) {
+        throw new Exception("Erro ao atualizar estoque do produto: " . $e->getMessage());
+    }
+}
+
     public static function delete(int $id): bool
     {
         $sql_check = "SELECT COUNT(*) as total FROM itens_venda WHERE produto_id = :id";
